@@ -10,8 +10,9 @@ const PORT = 3001;
 /* middleware - se ejecutan antes de la ruta  */
 app.use(express.json())
 /* archivos estaticos */
-app.use(express.static(path.join(__dirname,'public')))
-
+const direccion = path.join(__dirname, 'public')
+app.use(express.static(direccion)) 
+console.log(direccion)
 
 let productos = [
     {
