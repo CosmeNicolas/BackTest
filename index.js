@@ -11,7 +11,7 @@ const PORT = 3001;
 app.use(express.json())
 /* archivos estaticos */
 app.use(express.static(path.join(__dirname,'public')))
-console.log(express.static(__dirname,'public'))
+
 
 let productos = [
     {
