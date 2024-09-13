@@ -1,11 +1,9 @@
 /* clases - plantillas - server - configuracion a partir de una clase  */
 
-/* llamamos a exores  */
+/* llamamos a express  */
 const express = require("express");
-const path = require('path')
-const cors = require('cors')
-
-
+const path = require("path");
+const cors = require("cors");
 
 class Server {
   /* asignamos los atributos, metodos, parametros, etc */
@@ -15,8 +13,8 @@ class Server {
     this.port = process.env.PORT || 8080;
 
     /* invocamos los middlewares - rutas en el constructir */
-    this.middleware()
-    this.routes()
+    this.middleware();
+    this.routes();
   }
 
   /* Traer Middlewares */
@@ -25,14 +23,12 @@ class Server {
     this.app.use(express.json());
     /* archivos estaticos */
     this.app.use(express.static(path.join(__dirname, "public")));
-    this.app.use(cors())
+    this.app.use(cors());
   }
-  
-
-
   /* aca van todas las rutas del servidor */
   routes() {
-    this.app.use('/api/productos', require('../routes/productos.routes'))
+    this.app.use("/api/productos", require("../routes/productos.routes"));
+    this.app.use("/api/usuarios", require("../routes/usuario.routes"))
   }
   listen() {
     /* escuchamos el puerto  */

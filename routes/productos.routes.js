@@ -1,20 +1,21 @@
 /* instanciamos las rutas de  express */
 /* const {Router} = require('express') */
-const express = require('express');
-const { obtenerProductos,
-  crearProdcuto,
+const express = require("express");
+const {
+  obtenerProductos,
+  crearProducto,
   actualizarProdcutoxID,
-  eliminarProducto } = require('../controllers/producto.controllers');
-const router = express.Router()
+  eliminarProducto,
+} = require("../controllers/producto.controllers");
+const router = express.Router();
 
 /* GET - obtener */
 router.get("/", obtenerProductos);
 
-
 /* POST - Crear */
 
-router.post("/", crearProdcuto);
-    /* Verbos: GET - PSOT - PUT - DELETE , siempre hay una req, y res
+router.post("/", crearProducto);
+/* Verbos: GET - PSOT - PUT - DELETE , siempre hay una req, y res
 endpoint , ruta, middleware , controlador
 ej: app.get('/', middleware, ()=>{})
 */
@@ -25,9 +26,7 @@ router.put("/:id", actualizarProdcutoxID);
 router.delete("/:id", eliminarProducto);
 
 /* exportar las rutas  */
-module.exports = router
-
-
+module.exports = router;
 
 /* GET - id */
 /* app.get('/api/productos/:id',(req, res)=>{ */

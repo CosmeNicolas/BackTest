@@ -32,7 +32,7 @@ const obtenerProductos = (req, res) => {
   }
 };
 
-const crearProdcuto = (req, res) => {
+const crearProducto = (req, res) => {
   /* creamos - info x body */
   try {
     /* const datProducto = req.body */
@@ -85,7 +85,7 @@ const eliminarProducto = (req, res) => {
 
 module.exports = {
   obtenerProductos,
-  crearProdcuto,
+  crearProducto,
   actualizarProdcutoxID,
   eliminarProducto
 }
