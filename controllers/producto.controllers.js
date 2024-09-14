@@ -1,16 +1,4 @@
-/* creamos un objeto de productos */
-let productos = [
-  {
-    id: 1,
-    nombre: "celurar",
-    precio: 10000,
-  },
-  {
-    id: 2,
-    nombre: "tablet",
-    precio: 12000,
-  },
-]; 
+const serviciosProductos = require('../services/productos.services')
 
 
 const obtenerProductos = (req, res) => {
@@ -21,9 +9,10 @@ const obtenerProductos = (req, res) => {
   try {
     const id = Number(req.query.id);
     if (id) {
-      const producto = productos.find((prod) => prod.id === id);
+      const producto = serviciosProductos.getProducto(id)
       res.status(200).json(producto);
     } else {
+      const productos = serviciosProductos.getProductos()
       res.status(200).json({ msg: "Productos encontrados", productos });
     }
   } catch (error) {
