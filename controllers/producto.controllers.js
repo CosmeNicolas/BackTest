@@ -10,6 +10,9 @@ const obtenerProductos = (req, res) => {
     const id = Number(req.query.id);
     if (id) {
       const producto = serviciosProductos.getProducto(id)
+      if (!producto) {
+        return res.status(404).json({ msg: 'Producto no encontrado' });
+      }
       res.status(200).json(producto);
     } else {
       const productos = serviciosProductos.getProductos()
@@ -24,15 +27,8 @@ const obtenerProductos = (req, res) => {
 const crearProducto = (req, res) => {
   /* creamos - info x body */
   try {
-    /* const datProducto = req.body */
-    /* const { nombre, precio} = req.body */
-    /* spread operator */
-    const nuevoProducto = {
-      id: productos[productos.length - 1].id + 1,
-      ...req.body,
-    };
-    productos.push(nuevoProducto);
-    res.status(201).json(nuevoProducto);
+    const respuesta = serviciosProductos.nuevoProducto(req.body)
+    res.status(201).json(respuesta);
   } catch (error) {
     res.status(500).json({ msg: "Productos no encontrados", error });
   }
@@ -40,19 +36,8 @@ const crearProducto = (req, res) => {
 
 const actualizarProdcutoxID =  (req, res) => {
   try {
-    const id = Number(req.params.id);
-    const posicionProductoEnArray = productos.findIndex(
-      (producto) => producto.id === id
-    );
-
-    const productoEditado = {
-      id,
-      ...req.body,
-    };
-
-    productos[posicionProductoEnArray] = productoEditado;
-
-    res.status(200).json(productos[posicionProductoEnArray]);
+    const productoActualizado = serviciosProductos.editarProducto(id)
+    res.status(200).json(productoActualizado);
   } catch (error) {
     res.status(500).json({ msg: "Productos no actualizado", error });
   }
@@ -60,13 +45,11 @@ const actualizarProdcutoxID =  (req, res) => {
 
 const eliminarProducto = (req, res) => {
   try {
-    const id = Number(req.params.id);
-    const productoNoBorrado = productos.filter(
-      (producto) => producto.id !== id
-    );
-
-    productos = productoNoBorrado;
-    res.status(200).json(productos);
+    const id = Number(req.params.id)
+    let res = serviciosProductos.eliminarProductoPorId(id)
+    if(res === 200){
+      res.status(200).json({msg: 'producto borrado'});
+    }
   } catch (error) {
     res.status(500).json({ msg: "Error al borrar", error });
   }
