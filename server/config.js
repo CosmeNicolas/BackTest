@@ -1,5 +1,8 @@
 /* clases - plantillas - server - configuracion a partir de una clase  */
 
+/* conectamos la base con el server  */
+require('../db/config')
+
 /* llamamos a express  */
 const express = require("express");
 const path = require("path");

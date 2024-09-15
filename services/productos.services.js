@@ -1,5 +1,5 @@
 /* acá guardamos la lógica de negocio */
-let productos = [
+/* let productos = [
   {
     id: 1,
     nombre: "celurar",
@@ -10,26 +10,30 @@ let productos = [
     nombre: "tablet",
     precio: 12000,
   },
-]; 
+];  */
+
+/* CON DB - TRAER EL MODELO DE MONGOOSE */
+const ProductoModel = require('../models/producto.schema')
+
+
+
+
 /* obtener todos los productos */
-const getProductos = ()=>{
-  return productos
+const getProductos = async()=>{
+  const obtenerProducto = await ProductoModel.find()
+  return obtenerProducto
 }
 /* obtener un producto */
-const getProducto = (id)=>{
-  const producto = productos.find((prod) => prod.id === id);
+const getProducto = async (id)=>{
+  const producto = await ProductoModel.findOne({_id: id})
   return producto
 }
 /* nuevo producto */
 const nuevoProducto = (body)=>{
   try {
-    const nuevoProducto = {
-      id: productos[productos.length - 1].id +1,
-      ...body
-    }
-   
-    productos.push(nuevoProducto);
+    const nuevoProducto = new ProductoModel(body)
     return nuevoProducto
+    console.log(nuevoProducto)
   } catch (error) {
     console.log(error)
   }

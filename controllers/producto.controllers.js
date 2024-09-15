@@ -1,7 +1,7 @@
 const serviciosProductos = require('../services/productos.services')
 
 
-const obtenerProductos = (req, res) => {
+const obtenerProductos = async (req, res) => {
   /* Request - Es la petición que el front nos envia al back */
   /* Res - Es la respuesta del back que envia al front */
   /* response - status - formato ({es la estructura de respuesta})*/
@@ -9,13 +9,13 @@ const obtenerProductos = (req, res) => {
   try {
     const id = Number(req.query.id);
     if (id) {
-      const producto = serviciosProductos.getProducto(id)
+      const producto = await serviciosProductos.getProducto(id)
       if (!producto) {
         return res.status(404).json({ msg: 'Producto no encontrado' });
       }
       res.status(200).json(producto);
     } else {
-      const productos = serviciosProductos.getProductos()
+      const productos = await serviciosProductos.getProductos()
       res.status(200).json({ msg: "Productos encontrados", productos });
     }
   } catch (error) {
@@ -24,10 +24,11 @@ const obtenerProductos = (req, res) => {
   }
 };
 
-const crearProducto = (req, res) => {
+const crearProducto = async(req, res) => {
   /* creamos - info x body */
   try {
-    const respuesta = serviciosProductos.nuevoProducto(req.body)
+    const respuesta = await serviciosProductos.nuevoProducto(req.body)
+    await respuesta.save()
     res.status(201).json(respuesta);
   } catch (error) {
     res.status(500).json({ msg: "Productos no encontrados", error });
