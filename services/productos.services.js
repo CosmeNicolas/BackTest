@@ -17,7 +17,6 @@ const ProductoModel = require('../models/producto.schema')
 
 
 
-
 /* obtener todos los productos */
 const getProductos = async()=>{
   const obtenerProducto = await ProductoModel.find()
@@ -40,33 +39,21 @@ const nuevoProducto = (body)=>{
  
 }
 
-const editarProducto = (id)=>{
+const editarProducto = async (id, body)=>{
   try {
-    const id = Number(req.params.id);
-    const posicionProductoEnArray = productos.findIndex(
-      (producto) => producto.id === id
-    );
-
-    const productoEditado = {
-      id,
-      ...req.body,
-    };
-
-    productos[posicionProductoEnArray] = productoEditado;
+    const productoEditado = await ProductoModel.findByIdAndUpdate({_id: id}, body, {new:true})
+    /* estas propiedades , id, body y new true , nos trae el ultimo dato actualizado */
     return productoEditado
   } catch (error) {
     console.log(error)
   }
 }
 
-const eliminarProductoPorId = (id) => {
+const eliminarProductoPorId =async (id) => {
   try {
-/*     const id = Number(req.params.id); */
-    const posicionProductoEnArray = productos.findIndex(
-      (producto) => producto.id !== id
-    );
-    productos.splice(posicionProductoEnArray, 1);
-    return "Producto borrado";
+/* solo pasamos el modelo para eliminar el producto */
+    await ProductoModel.findByIdAndDelete({_id: id})
+    return 200
   } catch (error) {
     console.log(error);
   }
