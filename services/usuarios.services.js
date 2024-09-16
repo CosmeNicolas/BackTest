@@ -1,4 +1,4 @@
-const usuarios = [
+/* const usuarios = [
   {
     id:1,
     nombreUsuario: "Nico2024",
@@ -6,45 +6,75 @@ const usuarios = [
     constrasenia: "123456789",
   },
 ];
+ */
 
-
+const UsuarioModel = require('../models/usuario.schema')
+/* bcrypt Bcrypt */
+const bcrypt = require('bcrypt')
 /* crear usuario  */
-const nuevoUsuario = (body)=>{
+const nuevoUsuario = async (body)=>{
   try {
-    const emailExiste = usuarios.find(
-      (usuario) => usuario.emailDelUsuario === body.emailDelUsuario
-    );
-    const usuarioExiste = usuarios.find(
-      (usuario) => usuario.nombreUsuario === body.nombreUsuario
-    );
-    if (usuarioExiste) {
-      return res.status(400).json({ msg: "Usuario no disponible" });
+    /* Usuario logueado o no  */
+    const usuarioExiste = await UsuarioModel.findOne({nombreUsuario: body.nombreUsuario})
+    if(usuarioExiste){
+      return 400
     }
-    if (emailExiste) {
-      return res.status(400).json({ msg: "correo no disponible" });
-    }
-    const id = crypto.randomUUID();
-    usuarios.push({ id,baja: false, ...body });
-    /* ... el spread copia el objeto y le agregamos el id */
+    /* Usuario logueado o no */
+    /* traemos la constraseña y la hasheamos */
+    let salt = bcrypt.genSaltSync();
+    /* cantidad de saltos de encirptacion - xdefcto 10 */
+    body.constrasenia = bcrypt.hashSync(body.constrasenia, salt)
+    /* tomamos la contraseña del body del usuario + salt  y lo mandamos encriptado*/
+    /* bcrypt Bcrypt */
+
+    
+    const usuario =  new UsuarioModel(body)
+    await usuario.save()
     return 201
   } catch (error) {
     console.log(error)
   }
 }
 
-/* mostrar todos los usuarios  */
-const todosLosUsuarios = ()=>{
+/* Inicio Sesion Service  */
+const inisioSesion = async(body)=>{
   try {
-    return usuarios
+    /* Usuario logueado o no  */
+    const usuarioExiste = await UsuarioModel.findOne({nombreUsuario: body.nombreUsuario})
+    if(!usuarioExiste){
+      return 400
+    }
+
+    /* si no existe comparo contraseñas */
+    const verificoContrasenia = bcrypt.compareSync(body.constrasenia, usuarioExiste.constrasenia)
+
+    if(verificoContrasenia){
+      return 200
+    }else{
+      return 400
+    }
+
+
+    /* si no existe comparo contraseñas */
+  } catch (error) {
+    console.log(error)
+  }
+}
+/* mostrar todos los usuarios  */
+const todosLosUsuarios = async ()=>{
+  try {
+     const usuarios = await UsuarioModel.find()
+     return usuarios
   } catch (error) {
     console.log(error)
   }
 }
 
 /* obtener un usuarios services */
-const obtenerUnUsuario = (idUsuario)=>{
+const obtenerUnUsuario = async (idUsuario)=>{
   try {
-    const usuario = usuarios.find((user)=> user.id === idUsuario)
+   
+    const usuario = await UsuarioModel.findOne({_id: idUsuario})
     /* retornamos el usuario encontrado */
     return usuario
   } catch (error) {
@@ -53,11 +83,9 @@ const obtenerUnUsuario = (idUsuario)=>{
 }
 
 /* baja del usuarioCompleto */
-const bajaUsuario = (idUsuario)=>{
+const bajaUsuario = async(idUsuario)=>{
   try {
-     /* splice - recibe posicion y cantidad */
-     const posicionUsuario = usuarios.findIndex((usuario)=>usuario.id === idUsuario)
-     usuarios.splice(posicionUsuario, 1)
+     await UsuarioModel.findByIdAndDelete({_id: idUsuario})
      return 200 
   } catch (error) {
    console.log(error) 
@@ -65,14 +93,14 @@ const bajaUsuario = (idUsuario)=>{
 }
 
 /* actualizacion del usuario - baja o no  */
-const actualizoUsuarioLogica = (idUsuario)=>{
-  const posicionUsuario = usuarios.findIndex((usuario)=> usuario.id === idUsuario)
+const actualizoUsuarioLogica = async (idUsuario) => {
+  const usuario = await UsuarioModel.findOne({ _id: idUsuario });
+   usuario.bloqueado = !usuario.bloqueado
+   /*  si quiero cambiar lso roles enum , en schema de DB */
 
-  usuarios[posicionUsuario].baja = !usuarios[posicionUsuario].baja
-
-  const mensaje = usuarios[posicionUsuario].baja ? 'Usuario bloquedo' : 'Usuario Activo'
-  return mensaje
-}
+   const actualizarUsuario = await  UsuarioModel.findByIdAndUpdate({ _id: idUsuario }, usuario, { new: true });
+  return actualizarUsuario;
+};
 
 /* exportamos los modulos para los controlers */
 module.exports = {
@@ -80,5 +108,6 @@ module.exports = {
   todosLosUsuarios, 
   obtenerUnUsuario,
   bajaUsuario,
-  actualizoUsuarioLogica
+  actualizoUsuarioLogica,
+  inisioSesion
 }

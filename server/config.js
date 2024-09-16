@@ -7,6 +7,7 @@ require('../db/config')
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+const morgan = require('morgan')
 
 class Server {
   /* asignamos los atributos, metodos, parametros, etc */
@@ -27,6 +28,8 @@ class Server {
     /* archivos estaticos */
     this.app.use(express.static(path.join(__dirname, "public")));
     this.app.use(cors());
+    /* morgan */
+    this.app.use(morgan('dev'))
   }
   /* aca van todas las rutas del servidor */
   routes() {
