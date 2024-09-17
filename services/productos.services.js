@@ -1,16 +1,4 @@
 /* acá guardamos la lógica de negocio */
-/* let productos = [
-  {
-    id: 1,
-    nombre: "celurar",
-    precio: 10000,
-  },
-  {
-    id: 2,
-    nombre: "tablet",
-    precio: 12000,
-  },
-];  */
 
 /* CON DB - TRAER EL MODELO DE MONGOOSE */
 const ProductoModel = require('../models/producto.schema')
@@ -18,9 +6,23 @@ const ProductoModel = require('../models/producto.schema')
 
 
 /* obtener todos los productos */
-const getProductos = async()=>{
-  const obtenerProducto = await ProductoModel.find()
-  return obtenerProducto
+const getProductos = async(limit, to)=>{
+  /* const obtenerProducto = await ProductoModel.find()
+  return obtenerProducto */
+  /* PAGINACION */
+  const [productos, cantidadTotal] = await Promise.all([
+    /* traemos el modelo, buscamos, desde y hasta */
+    ProductoModel.find({activo: true}).skip(to * limit).limit(limit),
+    /* para traer los activos pasar en true */
+    ProductoModel.countDocuments({activo: true})
+  ]
+  )
+  const paginacion = {
+    productos,
+    cantidadTotal
+  }
+  return paginacion
+  /* PAGINACION */
 }
 /* obtener un producto */
 const getProducto = async (id)=>{

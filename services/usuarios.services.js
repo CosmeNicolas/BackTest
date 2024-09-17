@@ -3,7 +3,7 @@
     id:1,
     nombreUsuario: "Nico2024",
     emailDelUsuario: "nicoUsuario@gmail.com",
-    constrasenia: "123456789",
+    contrasenia: "123456789",
   },
 ];
  */
@@ -19,11 +19,15 @@ const nuevoUsuario = async (body)=>{
     if(usuarioExiste){
       return 400
     }
+    /* chequeamos el usaurio */
+    if(body.role !== 'usuario' && body.rol !== 'admin' ){
+      return 409
+    }
     /* Usuario logueado o no */
     /* traemos la constraseña y la hasheamos */
     let salt = bcrypt.genSaltSync();
     /* cantidad de saltos de encirptacion - xdefcto 10 */
-    body.constrasenia = bcrypt.hashSync(body.constrasenia, salt)
+    body.contrasenia = bcrypt.hashSync(body.contrasenia, salt)
     /* tomamos la contraseña del body del usuario + salt  y lo mandamos encriptado*/
     /* bcrypt Bcrypt */
 
@@ -46,7 +50,7 @@ const inisioSesion = async(body)=>{
     }
 
     /* si no existe comparo contraseñas */
-    const verificoContrasenia = bcrypt.compareSync(body.constrasenia, usuarioExiste.constrasenia)
+    const verificoContrasenia = bcrypt.compareSync(body.contrasenia, usuarioExiste.contrasenia)
 
     if(verificoContrasenia){
       return 200
@@ -64,6 +68,19 @@ const inisioSesion = async(body)=>{
 const todosLosUsuarios = async ()=>{
   try {
      const usuarios = await UsuarioModel.find()
+     /* quiatr constraseña */
+  /*    const ususarioSinContrasenia = []
+     usuarios.forEach((usuario)=>{
+      const obj = {
+        _id: usuario._id,
+        nombreUsuario: usuario.nombreUsuario,
+        role: usuario.role,
+        bloqueado: usuario.bloqueado
+      }
+      ususarioSinContrasenia.push(obj)
+     })
+     return ususarioSinContrasenia */
+      /* quiatr constraseña */
      return usuarios
   } catch (error) {
     console.log(error)

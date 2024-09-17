@@ -7,6 +7,7 @@ const {
   actualizarProdcutoxID,
   eliminarProducto,
 } = require("../controllers/producto.controllers");
+const { check } = require("express-validator");
 const router = express.Router();
 
 /* GET - obtener */
@@ -14,13 +15,19 @@ router.get("/", obtenerProductos);
 
 /* POST - Crear */
 
-router.post("/", crearProducto);
+router.post("/", 
+  check('nombre','cammpo Nombre Vacio').not().isEmpty(),
+  check('precio', 'campo Precio vacio').not().isEmpty(),
+  check('descripcion', 'campo Descripcion vacio').not().isEmpty()
+  ,crearProducto);
 /* Verbos: GET - PSOT - PUT - DELETE , siempre hay una req, y res
-endpoint , ruta, middleware , controlador
-ej: app.get('/', middleware, ()=>{})
-*/
+
 /* PUT - editar */
-router.put("/:id", actualizarProdcutoxID);
+router.put("/:id",
+  check('nombre','cammpo Nombre Vacio').not().isEmpty(),
+  check('precio', 'campo Precio vacio').not().isEmpty(),
+  check('descripcion', 'campo Descripcion vacio').not().isEmpty()
+  , actualizarProdcutoxID);
 
 /* DELETE */
 router.delete("/:id", eliminarProducto);

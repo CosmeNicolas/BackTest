@@ -8,7 +8,7 @@ const UsuarioSchema = new Schema({
     unique: true,
     trim: true
   },
-  constrasenia : {
+  contrasenia : {
     type: String,
     required: true,
     trim: true
@@ -16,12 +16,21 @@ const UsuarioSchema = new Schema({
   role:{
     type:String,
     default: 'usuario',
+    enum: ['usuario', 'admin']
   },
   bloqueado:{
     type: Boolean,
     default: false
   }
 })
+
+/* no mostrar desde el esquema la contraseña */
+UsuarioSchema.methods.toJSON = function(){ 
+  /* desestructuro lo q quiero sacar */ 
+  const {contrasenia,__v
+, ...usuario} = this.toObject()
+  return usuario
+}
 
 const UsuarioModel = model('user',UsuarioSchema)
 module.exports = UsuarioModel

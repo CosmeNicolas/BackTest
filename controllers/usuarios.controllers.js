@@ -1,14 +1,25 @@
 const serviceUsuarios = require('../services/usuarios.services')
-
+const {validationResult} = require('express-validator')
 /* servicios  */
 /* crear usuario */
 const crearUsuario = async (req, res) => {
   try {
+    /* express validator */
+    const {errors} = validationResult(req)
+    /* devuelve un objeto - para facilitar ver los errores    */
+
+    /* console.log(errors) */
+    if(errors.length){
+      return res.status(400).json({msg: errors[0].msg})
+    }
+
+
+     /* express validator */
     const usuario = await serviceUsuarios.nuevoUsuario(req.body)
     if(usuario === 201){
       res.status(201).json({ msg: "Usuario Creado", usuario });
-    }else{
-      res.status(400).json({msg:'Error al crear el usuario ver consola'})
+    }else if (usuario === 409){
+      res.status(409).json({msg:'Error en el rol del usaurio ,ver consola'})
     }
   } catch (error) {
     console.log(error);
@@ -20,6 +31,8 @@ const crearUsuario = async (req, res) => {
 /* comparamos las contraseñas para el ingreso de los usuarios */
 const InicioSesionUsuario = async (req, res)=>{
   try {
+   
+
     /* traemos los datos del body  */
     const usuario = await serviceUsuarios.inisioSesion(req.body)
     if(usuario === 400){
@@ -48,6 +61,16 @@ const mostrarUsuarios = async (req, res) => {
 /* Traer un usuario */
 const mostrarUsuario = async (req, res) => {
   try {
+     /* express validatero - validatorResult */
+     /* express validator */
+     const {errors} = validationResult(req)
+     /* devuelve un objeto - para facilitar ver los errores    */
+ 
+     /* console.log(errors) */
+     if(errors.length){
+       return res.status(400).json({msg: errors[0].msg})
+     }
+    /* express validatero - validatorResult */
     const muestroUnUsuario = await serviceUsuarios.obtenerUnUsuario(req.params.idUsuario)
       res.status(200).json(muestroUnUsuario);
   } catch (error) {

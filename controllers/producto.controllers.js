@@ -1,5 +1,5 @@
 const serviciosProductos = require('../services/productos.services')
-
+const {validationResult} = require('express-validator')
 
 const obtenerProductos = async (req, res) => {
   /* Request - Es la petición que el front nos envia al back */
@@ -10,11 +10,17 @@ const obtenerProductos = async (req, res) => {
   http://localhost:3001/api/productos/?id=66e638276e4e977c4d438a9d */
   try {
     const id = req.query.id;
+    /* paginacion */
+    const limit = req.query.limit || 10
+    const to = req.query.to || 0
+
+
+
    if(id){
       const producto  = await serviciosProductos.getProducto(id)
       res.status(200).json({msg:'Producto encontrado', producto})
     } else {
-      const productos = await serviciosProductos.getProductos()
+      const productos = await serviciosProductos.getProductos(limit, to)
       res.status(200).json({ msg: "Productos encontrados", productos });
     }
   } catch (error) {
@@ -26,6 +32,15 @@ const obtenerProductos = async (req, res) => {
 const crearProducto = async(req, res) => {
   /* creamos - info x body */
   try {
+      /* express validatero - validatorResult */
+     /* express validator */
+     const {errors} = validationResult(req)
+     /* devuelve un objeto - para facilitar ver los errores    */
+ 
+     /* console.log(errors) */
+     if(errors.length){
+       return res.status(400).json({msg: errors[0].msg})
+     }
     const respuesta = await serviciosProductos.nuevoProducto(req.body)
     await respuesta.save()
     res.status(201).json(respuesta);
@@ -36,6 +51,15 @@ const crearProducto = async(req, res) => {
 
 const actualizarProdcutoxID = async (req, res) => {
   try {
+      /* express validatero - validatorResult */
+     /* express validator */
+     const {errors} = validationResult(req)
+     /* devuelve un objeto - para facilitar ver los errores    */
+ 
+     /* console.log(errors) */
+     if(errors.length){
+       return res.status(400).json({msg: errors[0].msg})
+     }
     id = req.params.id
     const productoActualizado = await serviciosProductos.editarProducto(id, req.body)
     res.status(200).json({msg:'Producto actualizado',productoActualizado});
