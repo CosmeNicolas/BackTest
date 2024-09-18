@@ -1,5 +1,7 @@
+const { token } = require('morgan');
 const serviceUsuarios = require('../services/usuarios.services')
-const {validationResult} = require('express-validator')
+const {validationResult, Result} = require('express-validator')
+
 /* servicios  */
 /* crear usuario */
 const crearUsuario = async (req, res) => {
@@ -34,11 +36,12 @@ const InicioSesionUsuario = async (req, res)=>{
    
 
     /* traemos los datos del body  */
-    const usuario = await serviceUsuarios.inisioSesion(req.body)
-    if(usuario === 400){
+    const result = await serviceUsuarios.inisioSesion(req.body)
+    if(result.code === 400){
       res.status(400).json({msg:'Usuario y contraseña incorrecto'})
     }else{
-      res.status(200).json({msg:'Usuario logueado'})
+      /* iniciamos sesion y mandamos el token */
+      res.status(200).json({msg:'Usuario logueado', token: result.token})
     }
   } catch (error) {
     console.log(error)

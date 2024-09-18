@@ -8,29 +8,34 @@ const {
   eliminarProducto,
 } = require("../controllers/producto.controllers");
 const { check } = require("express-validator");
+const auth = require('../middlewares/auth')
 const router = express.Router();
 
 /* GET - obtener */
 router.get("/", obtenerProductos);
 
 /* POST - Crear */
-
-router.post("/", 
+router.post("/", [
   check('nombre','cammpo Nombre Vacio').not().isEmpty(),
   check('precio', 'campo Precio vacio').not().isEmpty(),
-  check('descripcion', 'campo Descripcion vacio').not().isEmpty()
-  ,crearProducto);
+  check('descripcion', 'campo Descripcion vacio').not().isEmpty(),
+],auth('admin'),crearProducto);
 /* Verbos: GET - PSOT - PUT - DELETE , siempre hay una req, y res
 
 /* PUT - editar */
-router.put("/:id",
-  check('nombre','cammpo Nombre Vacio').not().isEmpty(),
-  check('precio', 'campo Precio vacio').not().isEmpty(),
-  check('descripcion', 'campo Descripcion vacio').not().isEmpty()
-  , actualizarProdcutoxID);
+router.put(
+  "/:id",
+  [
+    check("nombre", "cammpo Nombre Vacio").not().isEmpty(),
+    check("precio", "campo Precio vacio").not().isEmpty(),
+    check("descripcion", "campo Descripcion vacio").not().isEmpty(),
+  ],
+  auth("admin"),
+  actualizarProdcutoxID
+);
 
 /* DELETE */
-router.delete("/:id", eliminarProducto);
+router.delete("/:id",auth('admin'), eliminarProducto);
 
 /* exportar las rutas  */
 module.exports = router;

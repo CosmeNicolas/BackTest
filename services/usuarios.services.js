@@ -7,6 +7,8 @@
   },
 ];
  */
+/* JWT - encriptamiento */
+const jwt = require('jsonwebtoken')
 
 const UsuarioModel = require('../models/usuario.schema')
 /* bcrypt Bcrypt */
@@ -46,16 +48,30 @@ const inisioSesion = async(body)=>{
     /* Usuario logueado o no  */
     const usuarioExiste = await UsuarioModel.findOne({nombreUsuario: body.nombreUsuario})
     if(!usuarioExiste){
-      return 400
+      return {code: 400}
     }
 
     /* si no existe comparo contraseñas */
     const verificoContrasenia = bcrypt.compareSync(body.contrasenia, usuarioExiste.contrasenia)
 
     if(verificoContrasenia){
-      return 200
+      const payload = {
+        /* guardamos los datos que vamos encriptar del usario existente */
+        _id: usuarioExiste._id,
+        role: usuarioExiste.role,
+        bloqueado: usuarioExiste.bloqueado
+      }
+      /* generamos el token, le mandamos el payload y la palabra clave, expire */
+
+      /* const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1m'}) - expira en un minuto */
+      const token = jwt.sign(payload, process.env.JWT_SECRET)
+      /* retornamos el token  */
+      return{
+        code: 200,
+        token
+      } 
     }else{
-      return 400
+      return {code: 400}
     }
 
 

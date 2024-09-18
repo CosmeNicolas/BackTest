@@ -10,6 +10,7 @@ const {
 const router = Router();
 /* Express - validator */
 const { check } = require("express-validator");
+const auth = require("../middlewares/auth");
 
 /* Crear */
 router.post(
@@ -37,11 +38,14 @@ router.post(
   check("contrasenia", "Campo Contraseña esta vacios").not().isEmpty(),
   InicioSesionUsuario
 );
-router.get("/", mostrarUsuarios);
-router.get("/:idUsuario",
-  check('idUsuario', 'Formato Id incorrecto').isMongoId()
-  , mostrarUsuario);
-router.delete("/:idUsuario", eliminarUsuarioFisico);
-router.put("/:idUsuario", actualizarUsuarioLogico);
+router.get("/", auth("admin"), mostrarUsuarios);
+router.get(
+  "/:idUsuario",
+  check("idUsuario", "Formato Id incorrecto").isMongoId()
+  ,auth('admin'),
+  mostrarUsuario
+);
+router.delete("/:idUsuario",auth('admin'), eliminarUsuarioFisico);
+router.put("/:idUsuario",auth('admin'), actualizarUsuarioLogico);
 
 module.exports = router;
