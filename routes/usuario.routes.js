@@ -41,11 +41,11 @@ router.post(
 router.get("/", auth("admin"), mostrarUsuarios);
 router.get(
   "/:idUsuario",
-  check("idUsuario", "Formato Id incorrecto").isMongoId()
-  ,auth('admin'),
+  check("idUsuario", "Formato Id incorrecto").isMongoId(),
+  auth("admin"),
   mostrarUsuario
 );
-router.delete("/:idUsuario",auth('admin'), eliminarUsuarioFisico);
-router.put("/:idUsuario",auth('admin'), actualizarUsuarioLogico);
+router.delete("/:idUsuario", auth("admin"), eliminarUsuarioFisico);
+router.put("/:idUsuario", auth("admin"), actualizarUsuarioLogico);
 
 module.exports = router;

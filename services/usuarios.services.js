@@ -13,6 +13,7 @@ const jwt = require('jsonwebtoken')
 const UsuarioModel = require('../models/usuario.schema')
 /* bcrypt Bcrypt */
 const bcrypt = require('bcrypt')
+const { registroUsuario } = require('../helpers/mensajes')
 /* crear usuario  */
 const nuevoUsuario = async (body)=>{
   try {
@@ -33,7 +34,7 @@ const nuevoUsuario = async (body)=>{
     /* tomamos la contraseña del body del usuario + salt  y lo mandamos encriptado*/
     /* bcrypt Bcrypt */
 
-    
+    registroUsuario()
     const usuario =  new UsuarioModel(body)
     await usuario.save()
     return 201
