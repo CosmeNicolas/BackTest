@@ -1,28 +1,34 @@
 /* desestructuramos el schema y el modelo */
-const {Schema, Model, model} = require('mongoose')
+const {Schema,model} = require('mongoose')
 
 const UsuarioSchema = new Schema({
   nombreUsuario: {
     type: String,
     required: true,
     unique: true,
-    trim: true
+    trim: true,
   },
-  contrasenia : {
+  contrasenia: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
-  role:{
-    type:String,
-    default: 'usuario',
-    enum: ['usuario', 'admin']
+  role: {
+    type: String,
+    default: "usuario",
+    enum: ["usuario", "admin"],
   },
-  bloqueado:{
+  bloqueado: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+  idCarrito: {
+    type: String,
+  },
+  idFavoritos: {
+    type: String,
+  },
+});
 
 /* no mostrar desde el esquema la contraseña */
 UsuarioSchema.methods.toJSON = function(){ 

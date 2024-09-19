@@ -14,6 +14,8 @@ const UsuarioModel = require('../models/usuario.schema')
 /* bcrypt Bcrypt */
 const bcrypt = require('bcrypt')
 const { registroUsuario } = require('../helpers/mensajes')
+const CarritoModel = require('../models/carrito.schema')
+const FavModel = require('../models/favorito.schema')
 /* crear usuario  */
 const nuevoUsuario = async (body)=>{
   try {
@@ -36,6 +38,15 @@ const nuevoUsuario = async (body)=>{
 
     registroUsuario()
     const usuario =  new UsuarioModel(body)
+    /* acá creamos el carrito y el favorito */
+    const carrito = new CarritoModel({idUsuario: usuario._id})
+    const favorito = new FavModel({idUsuario: usuario._id})
+
+    /* al usuario q se creo se agrega el id carrito y favorito  */
+    usuario.idCarrito = carrito._id
+    usuario.idFavoritos = favorito._id
+    await carrito.save()
+    await favorito.save()
     await usuario.save()
     return 201
   } catch (error) {
