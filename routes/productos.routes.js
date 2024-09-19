@@ -6,9 +6,11 @@ const {
   crearProducto,
   actualizarProdcutoxID,
   eliminarProducto,
+  agregarImagenProductoPorId,
 } = require("../controllers/producto.controllers");
 const { check } = require("express-validator");
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/auth');
+const multer = require("../middlewares/multer");
 const router = express.Router();
 
 /* GET - obtener */
@@ -19,8 +21,12 @@ router.post("/", [
   check('nombre','cammpo Nombre Vacio').not().isEmpty(),
   check('precio', 'campo Precio vacio').not().isEmpty(),
   check('descripcion', 'campo Descripcion vacio').not().isEmpty(),
-],auth('admin'),crearProducto);
+]/* ,auth('admin') */,crearProducto);
 /* Verbos: GET - PSOT - PUT - DELETE , siempre hay una req, y res
+
+/* POST _ IMAGEN */
+router.post('/agregarImagen/:id',multer.single('imagen'),agregarImagenProductoPorId)
+/* POST _ IMAGEN */
 
 /* PUT - editar */
 router.put(

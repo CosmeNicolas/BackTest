@@ -5,7 +5,7 @@ require('../db/config')
 
 /* llamamos a express  */
 const express = require("express");
-const path = require("path");
+const path = require('path');
 const cors = require("cors");
 const morgan = require('morgan')
 
@@ -26,7 +26,7 @@ class Server {
     /* middleware - se ejecutan antes de la ruta  */
     this.app.use(express.json());
     /* archivos estaticos */
-    this.app.use(express.static(path.join(__dirname, "public")));
+    this.app.use(express.static(path.join(__dirname, "../public")));
     this.app.use(cors());
     /* morgan */
     this.app.use(morgan('dev'))

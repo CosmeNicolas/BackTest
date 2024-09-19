@@ -1,3 +1,4 @@
+const ProductoModel = require('../models/producto.schema');
 const serviciosProductos = require('../services/productos.services')
 const {validationResult} = require('express-validator')
 
@@ -82,9 +83,25 @@ const eliminarProducto = async (req, res) => {
   }
 };
 
+/* controladro AGREGARIMAGEN */
+  const agregarImagenProductoPorId = async (req, res)=>{
+    try {
+      /* file - multer - cloudinary */
+      /* pasamos el file */
+      const resultado = await serviciosProductos.agregarImagen(req.params.id, req.file)
+      if(resultado === 200){
+     return res.status(200).json({msg:'Se agrego imagen'})
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+/* controladro AGREGARIMAGEN */
+
 module.exports = {
   obtenerProductos,
   crearProducto,
   actualizarProdcutoxID,
-  eliminarProducto
+  eliminarProducto,
+  agregarImagenProductoPorId
 }

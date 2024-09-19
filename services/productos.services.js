@@ -2,7 +2,7 @@
 
 /* CON DB - TRAER EL MODELO DE MONGOOSE */
 const ProductoModel = require('../models/producto.schema')
-
+const cloudinary = require('../helpers/cloudinary')
 
 
 /* obtener todos los productos */
@@ -60,11 +60,24 @@ const eliminarProductoPorId =async (id) => {
     console.log(error);
   }
 };
+
+const agregarImagen = async (id, file)=>{
+  /* busco el producto */
+  const producto = await ProductoModel.findOne({_id:id})
+  /* usamos el helper en el servicio */
+  /* llamamos el metodo uploader para cargar la imagen con la ruta en cloudinary */
+  const resultado = await cloudinary.uploader.upload(file.path)
+
+  producto.imagen = resultado.secure_url
+  await producto.save()
+  return 200
+}
 /* exporto las funciones */
 module.exports = {
   getProducto,
   getProductos,
   nuevoProducto,
   editarProducto,
-  eliminarProductoPorId
+  eliminarProductoPorId,
+  agregarImagen
 }

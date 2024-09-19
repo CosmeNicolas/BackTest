@@ -14,6 +14,11 @@ const Producto = new mongoose.Schema({
     type: Number,
     required: [true, 'El precio es obligatorio'],
   },
+  /* imagen */
+  imagen:{
+    type: String,
+    default: ''
+  }
 });
 
 /* creamos el modelo del esquema */
