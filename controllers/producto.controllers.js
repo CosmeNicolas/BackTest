@@ -1,4 +1,3 @@
-const ProductoModel = require('../models/producto.schema');
 const serviciosProductos = require('../services/productos.services')
 const {validationResult} = require('express-validator')
 
@@ -29,6 +28,18 @@ const obtenerProductos = async (req, res) => {
     res.status(500).json({ msg: "Productos no encontrados", error });
   }
 };
+
+/* controlador BuscarProducto */
+const buscadorProducto = async (req, res)=>{
+  try {
+    /* pasamos los datos de la ruta , sin modificar los datos de la ruta original  */
+      const resultado = await serviciosProductos.buscarProducto(req.query.palabra)
+      res.json(resultado)
+  } catch (error) {
+    console.log(error)
+  }
+}
+/* controlador BuscarProducto */
 
 const crearProducto = async(req, res) => {
   /* creamos - info x body */
@@ -103,5 +114,6 @@ module.exports = {
   crearProducto,
   actualizarProdcutoxID,
   eliminarProducto,
-  agregarImagenProductoPorId
+  agregarImagenProductoPorId,
+  buscadorProducto
 }

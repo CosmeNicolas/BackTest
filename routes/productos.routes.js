@@ -7,14 +7,19 @@ const {
   actualizarProdcutoxID,
   eliminarProducto,
   agregarImagenProductoPorId,
+  buscadorProducto,
 } = require("../controllers/producto.controllers");
 const { check } = require("express-validator");
 const auth = require('../middlewares/auth');
 const multer = require("../middlewares/multer");
+
 const router = express.Router();
 
 /* GET - obtener */
 router.get("/", obtenerProductos);
+
+/* GET - ObtenerProducot por busqueda */
+router.get('/buscar', buscadorProducto)
 
 /* POST - Crear */
 router.post("/", [

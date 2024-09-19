@@ -12,9 +12,9 @@ const getProductos = async(limit, to)=>{
   /* PAGINACION */
   const [productos, cantidadTotal] = await Promise.all([
     /* traemos el modelo, buscamos, desde y hasta */
-    ProductoModel.find({activo: true}).skip(to * limit).limit(limit),
+    ProductoModel.find(/* {activo: true} */).skip(to * limit).limit(limit),
     /* para traer los activos pasar en true */
-    ProductoModel.countDocuments({activo: true})
+   /*  ProductoModel.countDocuments({activo: true}) */
   ]
   )
   const paginacion = {
@@ -29,6 +29,29 @@ const getProducto = async (id)=>{
   const producto = await ProductoModel.findOne({_id: id})
   return producto
 }
+/* FiltrarProductos */
+const buscarProducto = async (palabra) => {
+  /* usamos expresiones regulares */
+  try {
+    const condicionBusqueda = new RegExp(
+      palabra,
+      "i"
+    ); /* la marca la palabra que sea indistinta */
+    const productos = await ProductoModel.find({
+      /* para buscar multiple , usamos el operador or de mongo que recibe un array */
+       $or:[
+       { nombre: condicionBusqueda},
+       { descripcion: condicionBusqueda},
+       ]
+      });
+    return productos
+    
+  } catch (error) {
+    console.log(error)
+  }
+};
+/* FiltrarProductos */
+
 /* nuevo producto */
 const nuevoProducto = (body)=>{
   try {
@@ -79,5 +102,6 @@ module.exports = {
   nuevoProducto,
   editarProducto,
   eliminarProductoPorId,
+  buscarProducto,
   agregarImagen
 }
