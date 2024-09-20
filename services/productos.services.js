@@ -3,6 +3,9 @@
 /* CON DB - TRAER EL MODELO DE MONGOOSE */
 const ProductoModel = require('../models/producto.schema')
 const cloudinary = require('../helpers/cloudinary')
+const UsuarioModel = require('../models/usuario.schema')
+const CarritoModel = require('../models/carrito.schema')
+const FavModel = require('../models/favorito.schema')
 
 
 /* obtener todos los productos */
@@ -29,6 +32,10 @@ const getProducto = async (id)=>{
   const producto = await ProductoModel.findOne({_id: id})
   return producto
 }
+
+
+
+
 /* FiltrarProductos */
 const buscarProducto = async (palabra) => {
   /* usamos expresiones regulares */
@@ -95,6 +102,117 @@ const agregarImagen = async (id, file)=>{
   await producto.save()
   return 200
 }
+
+/* AgregarProducto  carrito*/
+const agregarProducto = async (idUsuario, idProducto)=>{
+  const usuario = await UsuarioModel.findById(idUsuario)
+  const producto = await ProductoModel.findOne({_id: idProducto})
+  const carrito = await CarritoModel.findOne({_id: usuario.idCarrito})
+  
+  /* chequeamos q el pruducto exista */
+  const productoExiste = carrito.productos.find((prod)=> prod._id.toString() === producto._id.toString())
+  if(productoExiste){
+    return {
+      msg: 'Producto ya existe en el carrito',
+      statusCode: 400
+    }
+  }
+  carrito.productos.push(producto)
+  await carrito.save()
+
+  return {
+    msg:'Producto agregado al carrito',
+    statusCode: 200
+  }
+
+}
+/* AgregarProducto */
+
+/* Quitar producto  carrito*/
+const quitarProducto = async (idUsuario, idProducto)=>{
+  const usuario = await UsuarioModel.findById(idUsuario)
+  const producto = await ProductoModel.findOne({_id: idProducto})
+  const carrito = await CarritoModel.findOne({_id: usuario.idCarrito})
+  
+  /* chequeamos q el pruducto exista */
+  const posicionProducto = carrito.productos.findIndex((prod)=> prod._id.toString() === producto._id.toString())
+
+  if(posicionProducto < 0){
+    return {
+      msg:'El producto no se encontro',
+      statusCode: 400
+    }
+  }
+  carrito.productos.splice(posicionProducto,1)
+  
+  await carrito.save()
+  
+  return {
+    msg:'Producto Eliminado del carrito',
+    statusCode: 200
+  }
+
+}
+/* Quitar producto */
+
+
+
+/* FAVORITOS - AGREGAR - QUITAR */
+/* AgregarProducto  carrito*/
+const agregarProductoFav = async (idUsuario, idProducto)=>{
+  const usuario = await UsuarioModel.findById(idUsuario)
+  const producto = await ProductoModel.findOne({_id: idProducto})
+  const favoritos = await FavModel.findOne({_id: usuario.idFavoritos})
+  
+  /* chequeamos q el pruducto exista */
+  const productoExiste = favoritos.productos.find((prod)=> prod._id.toString() === producto._id.toString())
+  if(productoExiste){
+    return {
+      msg: 'Producto ya existe en el favoritos',
+      statusCode: 400
+    }
+  }
+  favoritos.productos.push(producto)
+  await favoritos.save()
+
+  return {
+    msg:'Producto agregado a favoritos',
+    statusCode: 200
+  }
+
+}
+/* AgregarProducto */
+
+/* Quitar producto  carrito*/
+const quitarProductoFav = async (idUsuario, idProducto)=>{
+  const usuario = await UsuarioModel.findById(idUsuario)
+  const producto = await ProductoModel.findOne({_id: idProducto})
+  const favoritos = await FavModel.findOne({_id: usuario.idFavoritos})
+  
+  /* chequeamos q el pruducto exista */
+  const posicionProducto = favoritos.productos.findIndex((prod)=> prod._id.toString() === producto._id.toString())
+  favoritos.productos.splice(posicionProducto,1)
+  
+  /* manejo de findIndex - por sobre borrado si el arreglo esta vacio */
+  console.log(posicionProducto)
+  if(posicionProducto < 0){
+    return {
+      msg:'El producto no se encontro',
+      statusCode: 400
+    }
+  }
+
+  await favoritos.save()
+  
+  return {
+    msg:'Producto Eliminado de Favoritos',
+    statusCode: 200
+  }
+
+}
+/* Quitar producto */
+/* FAVORITOS - AGREGAR - QUITAR */
+
 /* exporto las funciones */
 module.exports = {
   getProducto,
@@ -103,5 +221,9 @@ module.exports = {
   editarProducto,
   eliminarProductoPorId,
   buscarProducto,
-  agregarImagen
+  agregarImagen,
+  agregarProducto,
+  quitarProducto,
+  agregarProductoFav,
+  quitarProductoFav
 }

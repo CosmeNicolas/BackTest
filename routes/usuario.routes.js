@@ -32,6 +32,8 @@ router.post(
   ],
   crearUsuario
 );
+
+/* Loguear Usuario */
 router.post(
   "/login",
   check("nombreUsuario", "Campo Usuario esta vacio").not().isEmpty(),

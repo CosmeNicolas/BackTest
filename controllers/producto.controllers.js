@@ -109,11 +109,80 @@ const eliminarProducto = async (req, res) => {
   }
 /* controladro AGREGARIMAGEN */
 
+
+/* CARITO */
+
+/* aGREGAR AL CARRITO - FAVORITOS CONTROLELRS */
+const agregarProductoAlCarrito = async (req, res)=>{
+
+  try {
+  const resultado = await serviciosProductos.agregarProducto(req.id, req.params.id)
+  if(resultado.statusCode === 200){
+    res.status(200).json({msg: resultado.msg})
+  }else if(resultado.statusCode === 400){
+    res.status(400).json({msg: resultado.msg})
+  }
+  } catch (error) {
+    console.log(error)
+  }
+}
+/* aGREGAR AL CARRITO - FAVORITOS CONTROLELRS */
+
+/* Borrar Producto carrito */
+const borrarProductoCarrito = async(req, res)=>{
+  try {
+    const resultado = await serviciosProductos.quitarProducto(req.id, req.params.id)
+    if(resultado.statusCode === 200){
+      res.status(200).json({msg:resultado.msg})
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+/* Borrar Producto carrito */
+/* CARITO */
+
+
+/* FAVORITOS - AGREGAR - Quitar */
+const agregarProductoFavorito = async (req, res)=>{
+
+  try {
+  const resultado = await serviciosProductos.agregarProductoFav(req.id, req.params.id)
+  if(resultado.statusCode === 200){
+    res.status(200).json({msg: resultado.msg})
+  }else if(resultado.statusCode === 400){
+    res.status(400).json({msg: resultado.msg})
+  }
+  } catch (error) {
+    console.log(error)
+  }
+}
+/* aGREGAR AL CARRITO - FAVORITOS CONTROLELRS */
+
+/* Borrar Producto carrito */
+const borrarProductoFavorito = async(req, res)=>{
+  try {
+    const resultado = await serviciosProductos.quitarProductoFav(req.id, req.params.id)
+    if(resultado.statusCode === 200){
+      res.status(200).json({msg:resultado.msg})
+    }else if(resultado.statusCode === 400){
+      res.status(400).json({msg:resultado.msg})
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+/* FAVORITOS - AGREGAR - Quitar */
+
 module.exports = {
   obtenerProductos,
   crearProducto,
   actualizarProdcutoxID,
   eliminarProducto,
   agregarImagenProductoPorId,
-  buscadorProducto
+  buscadorProducto,
+  agregarProductoAlCarrito,
+  borrarProductoCarrito,
+  agregarProductoFavorito,
+  borrarProductoFavorito
 }
